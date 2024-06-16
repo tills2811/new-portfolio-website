@@ -69,7 +69,7 @@ export const projectsData = [
       "AI note-taking app using NextJS 13 for seamless navigation. Integrated DALLE AI Image Generation and OpenAI's Language Model API to enhance user experience.",
     tags: ["NextJS 13", "DALLE AI", "OpenAI", "Shadcn", "Tailwind CSS"],
     imageUrl: notetakingappImg,
-    link: "https://noteapp-flame.vercel.app/",
+    link: "https://genainoteapp.vercel.app/",
     github: "https://github.com/tills2811/noteapp",
   },
 
@@ -79,7 +79,7 @@ export const projectsData = [
       "Built a portfolio website with Next.js 14, using server actions and framer motion animations. Deployed on Vercel for performance and reliability.",
     tags: ["Next.js 14", "Server Actions", "Framer Motion", "Vercel"],
     imageUrl: portfolioImg, // make sure to replace this with the actual image URL or variable for the portfolio website image
-    link: "https://tills2811.github.io/Portfolio-Website/",
+    link: "https://shreyasharali.vercel.app/",
     github: "https://github.com/tills2811/new-portfolio-website",
   },
 
