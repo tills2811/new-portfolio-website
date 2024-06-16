@@ -70,6 +70,7 @@ export const projectsData = [
     tags: ["NextJS 13", "DALLE AI", "OpenAI", "Shadcn", "Tailwind CSS"],
     imageUrl: notetakingappImg,
     link: "https://noteapp-flame.vercel.app/",
+    github: "https://github.com/tills2811/noteapp",
   },
 
   {
@@ -79,6 +80,7 @@ export const projectsData = [
     tags: ["Next.js 14", "Server Actions", "Framer Motion", "Vercel"],
     imageUrl: portfolioImg, // make sure to replace this with the actual image URL or variable for the portfolio website image
     link: "https://tills2811.github.io/Portfolio-Website/",
+    github: "https://github.com/tills2811/new-portfolio-website",
   },
 
   // {

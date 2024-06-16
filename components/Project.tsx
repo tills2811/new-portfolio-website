@@ -15,6 +15,7 @@ export default function Project({
   tags,
   imageUrl,
   link,
+  github,
 }: ProjectProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -42,7 +43,7 @@ export default function Project({
             <a href={link} target="_blank">
               <LuExternalLink />
             </a>
-            <a href={link} target="_blank">
+            <a href={github} target="_blank">
               <FaGithub />
             </a>
           </h3>
