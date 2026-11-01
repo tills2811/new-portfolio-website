@@ -1,6 +1,7 @@
 import Footer from "@/components/footer";
 import Nav from "@/components/nav";
 import ThemeContextProvider from "@/context/theme-context";
+import { siteUrl } from "@/lib/site";
 import { themeScript } from "@/lib/theme-script";
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
@@ -10,7 +11,11 @@ import "./globals.css";
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Shreyash Arali, Full-stack and AI Engineer",
+  description:
+    "Software Engineer at THG Ingenuity building BrandStream, an AI platform that turns a brief and a product photo into campaign-ready creatives.",
+  openGraph: { type: "website", siteName: "Shreyash Arali" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
