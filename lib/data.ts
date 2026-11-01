@@ -86,6 +86,8 @@ export const projects: Project[] = [
     kind: "production",
     summary:
       "An AI creative and campaign platform: brief in, ad creatives out, launched on Meta and improved from the results.",
+    problemShort:
+      "Hundreds of beauty and fitness products need fresh ad creatives, and the tools making them weren't connected to ad results.",
     problem:
       "THG runs paid campaigns for hundreds of beauty and fitness products. Every product needs a steady stream of fresh ad creatives, and the tools the team used to make them, such as Magnific, sat apart from the ad accounts. Nobody could see which creative actually performed and feed that straight back into the next round.",
     role: "Full-stack: Next.js front end, FastAPI services, model and Meta integrations.",
@@ -139,6 +141,7 @@ export const projects: Project[] = [
     colour: "lilac",
     kind: "production",
     summary: "An AI course production platform that turns a source document into a finished L&D course.",
+    problemShort: "Each corporate L&D course took the creative team 1–1.5 days of manual work.",
     problem:
       "Harbinger's creative team builds L&D courses for corporate clients. Turning a client's source document into chapters, a storyboard and finished creatives took 1–1.5 days of manual work for every course.",
     role: "Full-stack, including the LangGraph agent workflow.",
@@ -169,6 +172,7 @@ export const projects: Project[] = [
     colour: "pine",
     kind: "production",
     summary: "Course localisation: upload a course once and get it back in 30+ languages.",
+    problemShort: "Clients need every course in many languages, and manual translation is slow and expensive.",
     problem:
       "Corporate clients need every course in many languages, and translating each one by hand is slow and expensive.",
     role: "Full-stack, from Next.js to the Python translation workflow.",
@@ -196,6 +200,7 @@ export const projects: Project[] = [
     kind: "prototype",
     summary:
       "An R&D proof of concept: FastAPI, LangChain, OpenAI and FAISS, with hybrid retrieval that combines vector search and keyword matching.",
+    problemShort: "A question-answering bot over internal documents, built to test retrieval strategies.",
     problem:
       "A question-answering bot over an internal document set, built to explore how retrieval choices affect answer quality.",
     role: "Built the prototype end to end.",

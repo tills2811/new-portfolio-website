@@ -13,6 +13,9 @@ export type Project = {
   colour: "tomato" | "lilac" | "pine" | null;
   kind: "production" | "prototype";
   summary: string;
+  /** one-line problem for the home card */
+  problemShort: string;
+  /** longer problem text for the case study page */
   problem: string;
   role: string;
   stack: string[];
