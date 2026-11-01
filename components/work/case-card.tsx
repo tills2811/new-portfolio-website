@@ -14,7 +14,7 @@ export default function CaseCard({ project, highlighted }: { project: Project; h
     <article
       data-project={project.id}
       data-hl={highlighted}
-      className={`grid gap-10 rounded-[10px] p-6 min-[900px]:grid-cols-[1fr_1.15fr] min-[900px]:p-9 ${projectBg[colour]}`}
+      className={`grid grid-cols-[minmax(0,1fr)] gap-10 rounded-[10px] p-6 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] min-[900px]:p-9 ${projectBg[colour]}`}
     >
       <div>
         <span className="text-sm font-semibold opacity-75">

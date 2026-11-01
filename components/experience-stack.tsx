@@ -13,7 +13,7 @@ const swatch: Record<Colour, string> = {
 export default function ExperienceStack({ onSkill }: { onSkill: (uses: ProjectId[] | null) => void }) {
   const clear = () => onSkill(null);
   return (
-    <div className="grid gap-14 min-[900px]:grid-cols-[1.1fr_0.9fr]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 min-[900px]:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <ol>
         {roles.map((r) => (
           <li

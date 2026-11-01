@@ -112,11 +112,11 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
   };
 
   return (
-    <div className="grid items-end gap-12 pb-16 pt-7 min-[900px]:grid-cols-[1fr_1.05fr] min-[900px]:pt-14">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-end gap-12 pb-16 pt-7 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] min-[900px]:pt-14">
       <div>
         {children}
         <div className="mt-[26px] flex max-w-[480px] items-center gap-2.5 rounded-full border-2 border-ink py-1.5 pl-[18px] pr-1.5">
-          <span className="flex-1 truncate text-[15px] text-ink-2">{briefs[state.brief].text}</span>
+          <span className="min-w-0 flex-1 truncate text-[15px] text-ink-2">{briefs[state.brief].text}</span>
           <button type="button" className="pill" onClick={generate}>
             Generate
           </button>

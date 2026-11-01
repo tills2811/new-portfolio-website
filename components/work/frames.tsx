@@ -33,7 +33,7 @@ export default function Frames({
         ref={ref}
         data-testid="frames"
         className={`frames grid gap-2 ${inView || reduced ? "in" : ""} ${
-          page ? "grid-cols-1 min-[600px]:grid-cols-2 min-[900px]:grid-cols-[repeat(var(--n),1fr)]" : "grid-cols-3 min-[900px]:grid-cols-[repeat(var(--n),1fr)]"
+          page ? "grid-cols-1 min-[600px]:grid-cols-2 min-[900px]:grid-cols-[repeat(var(--n),1fr)]" : "grid-cols-2 min-[600px]:grid-cols-3 min-[900px]:grid-cols-[repeat(var(--n),minmax(0,1fr))]"
         }`}
         style={{ ["--n" as string]: frames.length }}
       >
