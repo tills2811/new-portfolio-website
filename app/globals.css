@@ -125,3 +125,14 @@
 .work-list[data-dim="true"] [data-hl="true"] {
   transform: scale(1.01);
 }
+
+.typing::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  margin-left: 2px;
+  vertical-align: -3px;
+  background: #000;
+  animation: blink 1s steps(1) infinite;
+}

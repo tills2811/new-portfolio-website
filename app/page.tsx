@@ -1,3 +1,4 @@
+import Contact from "@/components/contact/contact";
 import FitAndWork from "@/components/fit-and-work";
 import FitBand from "@/components/fit-band";
 import Hero from "@/components/hero/hero";
@@ -8,6 +9,7 @@ export default function Home() {
       <Hero />
       <FitBand />
       <FitAndWork />
+      <Contact />
     </main>
   );
 }
