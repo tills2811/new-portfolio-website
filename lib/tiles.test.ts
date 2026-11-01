@@ -1,42 +1,42 @@
 import { describe, expect, it } from "vitest";
-import { briefs } from "./data";
-import { advance, initialTiles, regenerate } from "./tiles";
+import { journeyProjects, stages } from "./data";
+import { journeyTiles, nextProject } from "./tiles";
 
-describe("tiles", () => {
-  it("initialTiles has variants 1..6 from brief 0", () => {
-    const s = initialTiles();
-    expect(s.brief).toBe(0);
-    expect(s.tiles.map((t) => t.variant)).toEqual([1, 2, 3, 4, 5, 6]);
-    for (const t of s.tiles) expect(briefs[0].lines).toContain(t.line);
+describe("journey tiles", () => {
+  it("there are 6 stages, Idea through Adopted", () => {
+    expect(stages).toEqual(["Idea", "POC", "Prototype", "v1", "Production", "Adopted"]);
   });
 
-  it("advance changes exactly one tile and increments cursor", () => {
-    const s = initialTiles();
-    const n = advance(s);
-    expect(n.cursor).toBe(s.cursor + 1);
-    const changed = n.tiles.filter((t, i) => t !== s.tiles[i]);
-    expect(changed).toHaveLength(1);
-    expect(n.tiles[0].variant).toBe(7);
+  it("journeyTiles(0) is BrandStream's six milestones in stage order", () => {
+    const tiles = journeyTiles(0);
+    expect(tiles).toHaveLength(6);
+    expect(tiles.map((t) => t.stage)).toEqual(stages);
+    expect(tiles[5].line).toBe("Replaced Magnific");
+    expect(journeyProjects[0].id).toBe("brandstream");
   });
 
-  it("six advances touch each tile once", () => {
-    let s = initialTiles();
-    for (let i = 0; i < 6; i++) s = advance(s);
-    expect(s.tiles.map((t) => t.variant)).toEqual([7, 8, 9, 10, 11, 12]);
+  it("only production projects with a journey are cycled", () => {
+    expect(journeyProjects.map((p) => p.id)).toEqual(["brandstream", "icontent", "itranslate"]);
   });
 
-  it("regenerate cycles brief 0→1→2→0 and changes all tiles", () => {
-    let s = initialTiles();
-    const seen: number[] = [];
-    for (let i = 0; i < 3; i++) {
-      const prev = s;
-      s = regenerate(s);
-      seen.push(s.brief);
-      s.tiles.forEach((t, j) => {
-        expect(t).not.toBe(prev.tiles[j]);
-        expect(briefs[s.brief].lines).toContain(t.line);
-      });
+  it("nextProject cycles 0→1→2→0", () => {
+    expect([nextProject(0), nextProject(1), nextProject(2)]).toEqual([1, 2, 0]);
+  });
+
+  it("each tile has a colour pair and the six colours differ within a project", () => {
+    for (let p = 0; p < journeyProjects.length; p++) {
+      const tiles = journeyTiles(p);
+      for (const t of tiles) expect(t.bg && t.fg).toBeTruthy();
+      expect(new Set(tiles.map((t) => t.bg)).size).toBeGreaterThanOrEqual(5);
     }
-    expect(seen).toEqual([1, 2, 0]);
+  });
+
+  it("text on every tile colour is black, except pine and black tiles", () => {
+    for (let p = 0; p < journeyProjects.length; p++)
+      for (const t of journeyTiles(p)) {
+        if (t.bg === "#0B5D4B") expect(t.fg).toBe("#F2FFF8");
+        else if (t.bg === "#000") expect(t.fg).toBe("#FFD43B");
+        else expect(t.fg).toBe("#000");
+      }
   });
 });

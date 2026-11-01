@@ -1,4 +1,4 @@
-import type { Brief, Project, QuickAnswer, Role, SkillLayer } from "./types";
+import type { Project, QuickAnswer, Role, SkillLayer } from "./types";
 
 export const contactLinks = {
   email: "shreyasharali2811@gmail.com",
@@ -125,6 +125,15 @@ export const projects: Project[] = [
       },
     ],
     loopNote: "Step 4 feeds back into step 2.",
+    // DRAFT: review with Shreyash
+    journey: [
+      "Brief and photo in, ads out",
+      "Creatives from Gemini and Freepik",
+      "Campaigns launched on Meta",
+      "Results feed the next round",
+      "Live for THG's internal teams",
+      "Replaced Magnific",
+    ],
     built: [
       "Built the product from an empty repo, from POC to the tool every internal team uses.",
       "Next.js interface for briefs, creative review and campaign monitoring.",
@@ -157,6 +166,15 @@ export const projects: Project[] = [
       },
       { title: "Package course", detail: "Everything is packaged into a finished course." },
     ],
+    // DRAFT: review with Shreyash
+    journey: [
+      "A course from one document",
+      "Chapters and outlines by agents",
+      "Storyboards the team can edit",
+      "AI creatives, like a presenter",
+      "50+ courses, 5–6 clients",
+      "Courses in 2–4 hours",
+    ],
     built: [
       "Took the platform from POC to a product used by 20+ people and external clients.",
       "Agent workflows in LangChain and LangGraph for outlines, storyboards and quizzes.",
@@ -183,6 +201,15 @@ export const projects: Project[] = [
       { title: "Extract text and structure", detail: "Text is pulled out with its structure kept intact." },
       { title: "LLM translation", detail: "An LLM workflow translates the content into each target language." },
       { title: "Rebuild in 30+ languages", detail: "The course is rebuilt in every language." },
+    ],
+    // DRAFT: review with Shreyash
+    journey: [
+      "One course, every language",
+      "LLM translation of course text",
+      "Structure kept intact",
+      "Rebuilt course per language",
+      "Shipped to 5–6 clients",
+      "30+ languages, one upload",
     ],
     built: [
       "Took the product from POC to client delivery.",
@@ -242,48 +269,6 @@ export const quickAnswers: QuickAnswer[] = [
   },
 ];
 
-export const briefs: Brief[] = [
-  {
-    text: '"Summer serum launch, Gen Z, playful"',
-    lines: [
-      "Glow, on repeat.",
-      "Dewy by 9am.",
-      "Serum, but daily.",
-      "Skin first. Always.",
-      "Light layers, big glow.",
-      "Your summer edit.",
-      "Three drops. Done.",
-      "Made for midday.",
-    ],
-  },
-  {
-    text: '"Protein bar, gym regulars, bold"',
-    lines: [
-      "20g. Zero excuses.",
-      "Leg day fuel.",
-      "Bite. Lift. Repeat.",
-      "Snack like you train.",
-      "Built for the 6am crowd.",
-      "Gains, wrapped.",
-      "Your new pre-workout.",
-      "Strong taste. Stronger you.",
-    ],
-  },
-  {
-    text: '"Vitamin gummies, busy parents, warm"',
-    lines: [
-      "Healthy, handled.",
-      "The easy daily win.",
-      "Chewable calm.",
-      "One less thing.",
-      "Good mornings, sorted.",
-      "Tiny habit. Big days.",
-      "Yes, they taste good.",
-      "Care in a jar.",
-    ],
-  },
-];
-
 export const tilePalette: [bg: string, fg: string][] = [
   ["#FF4D2E", "#000"],
   ["#BFA8FF", "#000"],
@@ -292,5 +277,9 @@ export const tilePalette: [bg: string, fg: string][] = [
   ["#8EC9FF", "#000"],
   ["#000", "#FFD43B"],
   ["#F4D6CC", "#000"],
-  ["#FF4D2E", "#FFF"],
+  ["#BFA8FF", "#000"],
 ];
+
+export const stages = ["Idea", "POC", "Prototype", "v1", "Production", "Adopted"] as const;
+
+export const journeyProjects = projects.filter((p) => p.journey);

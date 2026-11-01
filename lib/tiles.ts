@@ -1,33 +1,16 @@
-import { briefs, tilePalette } from "./data";
+import { journeyProjects, stages, tilePalette } from "./data";
 
-export type Tile = { variant: number; line: string; bg: string; fg: string };
-export type TileState = { brief: number; cursor: number; nextVariant: number; tiles: Tile[] };
+export type Tile = { stage: string; line: string; bg: string; fg: string };
 
-const TILE_COUNT = 6;
-
-function makeTile(brief: number, variant: number, cursor: number): Tile {
-  const lines = briefs[brief].lines;
-  const [bg, fg] = tilePalette[(variant + cursor) % tilePalette.length];
-  return { variant, line: lines[variant % lines.length], bg, fg };
+/** The six stage tiles for journeyProjects[project]. Colours shift per project. */
+export function journeyTiles(project: number): Tile[] {
+  const journey = journeyProjects[project].journey ?? [];
+  return stages.map((stage, i) => {
+    const [bg, fg] = tilePalette[(i + project * 2) % tilePalette.length];
+    return { stage, line: journey[i] ?? "", bg, fg };
+  });
 }
 
-export function initialTiles(): TileState {
-  const tiles = Array.from({ length: TILE_COUNT }, (_, i) => makeTile(0, i + 1, 0));
-  return { brief: 0, cursor: 0, nextVariant: TILE_COUNT + 1, tiles };
+export function nextProject(project: number): number {
+  return (project + 1) % journeyProjects.length;
 }
-
-/** Repaint the tile at cursor % 6 with the next variant. */
-export function advance(s: TileState): TileState {
-  const slot = s.cursor % TILE_COUNT;
-  const tiles = s.tiles.slice();
-  tiles[slot] = makeTile(s.brief, s.nextVariant, s.cursor);
-  return { ...s, tiles, cursor: s.cursor + 1, nextVariant: s.nextVariant + 1 };
-}
-
-/** Switch to the next brief and repaint all six tiles. */
-export function regenerate(s: TileState): TileState {
-  const brief = (s.brief + 1) % briefs.length;
-  const tiles = s.tiles.map((_, i) => makeTile(brief, s.nextVariant + i, s.cursor));
-  return { ...s, brief, tiles, nextVariant: s.nextVariant + TILE_COUNT };
-}
-

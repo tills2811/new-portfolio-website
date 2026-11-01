@@ -1,68 +1,68 @@
 "use client";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { briefs } from "@/lib/data";
-import { advance, initialTiles, regenerate, type Tile, type TileState } from "@/lib/tiles";
+import { journeyProjects } from "@/lib/data";
+import { journeyTiles, nextProject, type Tile } from "@/lib/tiles";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-const INTERVAL = 1600;
+const CYCLE = 8000;
 const REPAINT_AT = 280;
 const SWAP_LENGTH = 600;
 const STAGGER = 90;
 
-function Bottle({ colour }: { colour: string }) {
-  return (
-    <svg viewBox="0 0 40 70" className="absolute right-3.5 top-3.5 w-[28%]" aria-hidden="true">
-      <rect x="14" y="2" width="12" height="12" rx="2" fill={colour} />
-      <rect x="6" y="14" width="28" height="54" rx="8" fill="none" stroke={colour} strokeWidth="3" />
-      <rect x="11" y="34" width="18" height="12" rx="2" fill={colour} />
-    </svg>
-  );
-}
-
-function TileCard({ tile, swapping }: { tile: Tile; swapping: boolean }) {
+function TileCard({ tile, index, swapping }: { tile: Tile; index: number; swapping: boolean }) {
   return (
     <div
       data-testid="tile"
-      data-variant={tile.variant}
+      data-stage={tile.stage}
+      data-line={tile.line}
       className={`relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-md p-3.5 shadow-[inset_0_0_0_1px_var(--hair)] ${
         swapping ? "swap animate-[wipe_0.6s_cubic-bezier(.7,0,.2,1)]" : ""
       }`}
       style={{ background: tile.bg, color: tile.fg }}
     >
-      <span className="relative text-xs font-semibold opacity-75">variant {tile.variant}</span>
+      <span className="flex items-baseline justify-between text-xs font-semibold">
+        <span className="opacity-75">{tile.stage}</span>
+        <span className="opacity-60">{index + 1}</span>
+      </span>
       <span
-        className="relative text-[clamp(17px,1.9vw,24px)] leading-[0.95]"
+        className="text-[clamp(15px,1.45vw,20px)] leading-[0.98]"
         style={{ fontVariationSettings: '"wdth" 72', fontWeight: 800 }}
       >
         {tile.line}
       </span>
-      <Bottle colour={tile.fg} />
     </div>
   );
 }
 
 /**
- * The hero's interactive part. `children` is the left column (headline, lede);
- * the brief pill sits under it and shares state with the tiles on the right.
+ * The hero's interactive part. `children` is the left column (headline, lede).
+ * The tiles show one product's path from idea to adoption and cycle through
+ * the production projects.
  */
 export default function TileGrid({ children }: { children?: ReactNode }) {
-  const [state, setState] = useState<TileState>(initialTiles);
+  const [project, setProject] = useState(0);
+  const [tiles, setTiles] = useState<Tile[]>(() => journeyTiles(0));
   const [swapping, setSwapping] = useState<ReadonlySet<number>>(() => new Set());
   const [gridRef, inView] = useInView<HTMLDivElement>({ threshold: 0.2 });
   const reduced = useReducedMotion();
-  const stateRef = useRef(state);
-  stateRef.current = state;
+  const projectRef = useRef(project);
+  projectRef.current = project;
   const hovered = useRef(false);
-  const timers = useRef<number[]>([]);
+  const timers = useRef<Set<number>>(new Set());
+  const [cycleKey, setCycleKey] = useState(0);
 
   const later = (fn: () => void, ms: number) => {
-    timers.current.push(window.setTimeout(fn, ms));
+    const id = window.setTimeout(() => {
+      timers.current.delete(id);
+      fn();
+    }, ms);
+    timers.current.add(id);
   };
   const clearTimers = () => {
     timers.current.forEach((t) => window.clearTimeout(t));
-    timers.current = [];
+    timers.current.clear();
   };
   const markSwap = (slot: number, on: boolean) =>
     setSwapping((prev) => {
@@ -74,36 +74,23 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
 
   useEffect(() => clearTimers, []);
 
-  useEffect(() => {
-    if (reduced || !inView) return;
-    const id = window.setInterval(() => {
-      if (hovered.current || document.hidden) return;
-      const slot = stateRef.current.cursor % 6;
-      markSwap(slot, true);
-      later(() => setState(advance), REPAINT_AT);
-      later(() => markSwap(slot, false), SWAP_LENGTH);
-    }, INTERVAL);
-    return () => window.clearInterval(id);
-  }, [reduced, inView]);
-
-  const generate = () => {
+  const show = (target: number) => {
     clearTimers();
     setSwapping(new Set());
-    const target = regenerate(stateRef.current);
+    setProject(target);
+    const next = journeyTiles(target);
     if (reduced) {
-      setState(target);
+      setTiles(next);
       return;
     }
-    // Switch the brief now; repaint tiles one by one.
-    setState((s) => ({ ...s, brief: target.brief, nextVariant: target.nextVariant }));
-    target.tiles.forEach((tile, i) => {
+    next.forEach((tile, i) => {
       later(() => markSwap(i, true), i * STAGGER);
       later(
         () =>
-          setState((cur) => {
-            const tiles = cur.tiles.slice();
-            tiles[i] = tile;
-            return { ...cur, tiles };
+          setTiles((cur) => {
+            const copy = cur.slice();
+            copy[i] = tile;
+            return copy;
           }),
         i * STAGGER + REPAINT_AT
       );
@@ -111,14 +98,37 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
     });
   };
 
+  // Auto-advance; restarts whenever the visitor picks a project (cycleKey).
+  useEffect(() => {
+    if (reduced || !inView) return;
+    const id = window.setInterval(() => {
+      if (hovered.current || document.hidden) return;
+      show(nextProject(projectRef.current));
+    }, CYCLE);
+    return () => window.clearInterval(id);
+    // show is recreated each render but only reads refs and setters
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced, inView, cycleKey]);
+
+  const current = journeyProjects[project];
+
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] items-end gap-12 pb-16 pt-7 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] min-[900px]:pt-14">
       <div>
         {children}
         <div className="mt-[26px] flex max-w-[480px] items-center gap-2.5 rounded-full border-2 border-ink py-1.5 pl-[18px] pr-1.5">
-          <span className="min-w-0 flex-1 truncate text-[15px] text-ink-2">{briefs[state.brief].text}</span>
-          <button type="button" className="pill" onClick={generate}>
-            Generate
+          <span data-testid="journey-project" className="min-w-0 flex-1 truncate text-[15px] text-ink-2">
+            <b className="font-semibold text-ink">{current.title}</b>, {current.org}
+          </span>
+          <button
+            type="button"
+            className="pill"
+            onClick={() => {
+              show(nextProject(project));
+              setCycleKey((k) => k + 1);
+            }}
+          >
+            Next project
           </button>
         </div>
       </div>
@@ -131,11 +141,11 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
           onMouseEnter={() => (hovered.current = true)}
           onMouseLeave={() => (hovered.current = false)}
         >
-          {state.tiles.map((tile, i) => (
-            <TileCard key={i} tile={tile} swapping={swapping.has(i)} />
+          {tiles.map((tile, i) => (
+            <TileCard key={i} tile={tile} index={i} swapping={swapping.has(i)} />
           ))}
         </div>
-        <p className="mt-2.5 text-[13px] text-muted">Illustrative variants, not client work.</p>
+        <p className="mt-2.5 text-[13px] text-muted">How each product went from idea to production.</p>
       </div>
     </div>
   );

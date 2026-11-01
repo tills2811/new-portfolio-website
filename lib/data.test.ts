@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { briefs, getProject, projects, skillLayers, tilePalette } from "./data";
+import { getProject, projects, skillLayers, tilePalette } from "./data";
 
 describe("content", () => {
   it('every skill "uses" id exists in projects', () => {
@@ -24,9 +24,11 @@ describe("content", () => {
     expect(getProject("rag-prototype")?.kind).toBe("prototype");
   });
 
-  it("each brief has exactly 8 lines and there are 3 briefs", () => {
-    expect(briefs).toHaveLength(3);
-    for (const b of briefs) expect(b.lines).toHaveLength(8);
+  it("every production project has a 6-step journey; the prototype has none", () => {
+    for (const p of projects) {
+      if (p.kind === "production") expect(p.journey).toHaveLength(6);
+      else expect(p.journey).toBeUndefined();
+    }
   });
 
   it("tilePalette has 8 pairs", () => {

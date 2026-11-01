@@ -46,7 +46,7 @@ The campaign colours stay the same in both themes. Colour blocks always use blac
 
 - One family: **Archivo** (variable: `wdth` 62–125, `wght` 300–900), loaded with `next/font/google` and the width axis enabled.
 - **Display** (h1, section headings, case-study titles, role titles): `wdth 62`, weight 800, line-height 0.88.
-  - h1: `clamp(64px, 8.4vw, 120px)`
+  - h1: `clamp(64px, 8.4vw, 120px)` on case pages; the home hero uses `clamp(56px, 6.6vw, 96px)` so its longer headline fits one screen
   - Section headings: `clamp(48px, 6vw, 84px)`
   - Case-study titles: `clamp(40px, 4.6vw, 64px)`
   - Role titles: 34px
@@ -68,8 +68,9 @@ The campaign colours stay the same in both themes. Colour blocks always use blac
 
 1. **Nav:** "Shreyash Arali" on the left. Work, Experience and Contact (anchor links), the theme toggle and a "Download CV" pill on the right. Sticky, gaining a page-coloured background once scrolled.
 2. **Hero** (two columns):
-   - Left: h1 "I build the AI tools that make the creative.", then the lede: "Software Engineer at THG Ingenuity. I build BrandStream, which turns a brief and a product photo into campaign-ready creatives, launches them on Meta and learns from the results." Below it, a brief pill showing a brief in quotes and a **Generate** button.
-   - Right: a 3×2 grid of illustrative ad tiles, captioned "Illustrative variants, not client work."
+   - Left: h1 "I take products from an empty repo to production.", then the lede: "Full-stack engineer (Next.js, Python, LangGraph). I've built three AI products from scratch to real users: BrandStream at THG Ingenuity, iContent and iTranslate at Harbinger." Below it, a pill naming the current project ("BrandStream, THG Ingenuity") and a **Next project** button.
+   - Right: a 3×2 grid of build-journey tiles, one per stage (Idea, POC, Prototype, v1, Production, Adopted), each with that project's milestone. Captioned "How each product went from idea to production."
+   - Revised 2026-11-02: the hero is about how Shreyash works, not about one company product.
 3. **Fit band:** a full-width ink strip with four cells:
    - 3+ years, shipping production apps
    - Next.js, React, TS: front end
@@ -164,9 +165,9 @@ The long-form text for the case study pages (problem paragraphs, frame explanati
 | Strongest project? | BrandStream. I built it full-stack from an empty repo to the tool every internal team at THG now uses instead of Magnific. |
 | What role next? | Full-stack or AI engineering roles where I own features end to end, from the React interface to the Python services and LLM workflows behind it. |
 
-### Hero briefs
+### Hero journeys
 
-Three preset briefs. Each has 8 ad lines and cycles on **Generate**. Copy is as in the reference preview: summer serum, protein bar, vitamin gummies. All products are fictional, with no real brand names.
+Each production project has six milestones (`journey` in `lib/data.ts`), one per stage. They are drawn only from the facts above, for example BrandStream's last stage is "Replaced Magnific" and iContent's is "Courses in 2–4 hours". The prototype has no journey.
 
 ### Metadata
 
@@ -181,10 +182,10 @@ Three preset briefs. Each has 8 ad lines and cycles on **Generate**. Copy is as 
 
 All motion respects `prefers-reduced-motion`. When reduced motion is on, everything renders in its final state and nothing loops.
 
-1. **Hero tile regeneration** (the signature moment):
-   - Every 1.6s, one tile wipes (clip-path out, then in, 0.6s) and repaints with the next colourway and ad line, cycling through the 6 tiles.
+1. **Hero build journey** (the signature moment):
+   - Every 8s the grid moves to the next project: all 6 tiles wipe (clip-path out, then in, 0.6s) with a 90ms stagger and repaint with that project's milestones and colours.
    - Pauses while the pointer is over the grid, while the tab is hidden, and while the hero is off-screen (IntersectionObserver).
-   - **Generate** swaps to the next brief and repaints all 6 tiles with a 90ms stagger.
+   - **Next project** does the same immediately and restarts the 8s timer.
 2. **Case frames:** when a frame row enters the viewport (35% visible), the frames rise in once, 0.5s each with a 120ms stagger. They don't animate again.
 3. **Skill → project highlight:** on hover or focus of a skill pill, the case cards that don't use it fade to 25% opacity and matching cards scale to 1.01. Keyboard focus triggers the same effect.
 4. **Quick answers:** tapping a chip marks it pressed and streams its answer at about 16ms per character, ending with a blinking caret. Tapping another chip cancels the current stream. The answer region is `aria-live="polite"`.
@@ -290,7 +291,7 @@ type Brief = { text: string; lines: string[] };
 - `npm run lint` and `npm run build` pass.
 - Run locally, then screenshot home and one case study in light and dark mode, at mobile and desktop widths. Compare against the reference preview.
 - Manually check:
-  - Generate cycles briefs.
+  - Next project cycles BrandStream, iContent, iTranslate.
   - Tiles pause on hover.
   - Skill hover and focus highlights the right cards.
   - Quick answers stream, and cancel when another is tapped.

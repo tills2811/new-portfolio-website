@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Shreyash Arali, Full-stack and AI Engineer",
   description:
-    "Software Engineer at THG Ingenuity building BrandStream, an AI platform that turns a brief and a product photo into campaign-ready creatives.",
+    "Full-stack engineer who takes products from an empty repo to production. Three AI products built from scratch to real users.",
   openGraph: { type: "website", siteName: "Shreyash Arali" },
 };
 
