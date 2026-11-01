@@ -1,3 +1,5 @@
+import Footer from "@/components/footer";
+import Nav from "@/components/nav";
 import ThemeContextProvider from "@/context/theme-context";
 import { themeScript } from "@/lib/theme-script";
 import type { Metadata } from "next";
@@ -19,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeContextProvider>
+          <Nav />
           {children}
+          <Footer />
           <Toaster position="top-right" />
         </ThemeContextProvider>
       </body>
