@@ -2,11 +2,11 @@
 
 import { type RefObject, useEffect, useRef, useState } from "react";
 
-export function useInView<T extends Element>(opts: { threshold?: number; once?: boolean } = {}): [
+export function useInView<T extends Element>(opts: { threshold?: number; rootMargin?: string; once?: boolean } = {}): [
   RefObject<T>,
   boolean,
 ] {
-  const { threshold = 0, once = false } = opts;
+  const { threshold = 0, rootMargin, once = false } = opts;
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
 
@@ -26,11 +26,11 @@ export function useInView<T extends Element>(opts: { threshold?: number; once?: 
           setInView(false);
         }
       },
-      { threshold }
+      { threshold, rootMargin }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [threshold, once]);
+  }, [threshold, rootMargin, once]);
 
   return [ref, inView];
 }

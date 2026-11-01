@@ -27,10 +27,13 @@ describe("Frames", () => {
   beforeEach(() => vi.stubGlobal("IntersectionObserver", IO));
   afterEach(() => vi.unstubAllGlobals());
 
-  it('frames get "in" class once intersecting at threshold 0.35, and keep it after leaving', () => {
+  it('frames get "in" class once the row reaches the upper 65% of the viewport, and keep it after leaving', () => {
     render(<Frames frames={bs.frames} />);
     const row = screen.getByTestId("frames");
-    expect(instance!.opts?.threshold).toBe(0.35);
+    // A ratio threshold can be unreachable for a row taller than the viewport;
+    // a root margin always triggers once the row's top passes 65% of the viewport.
+    expect(instance!.opts?.threshold ?? 0).toBe(0);
+    expect(instance!.opts?.rootMargin).toBe("0px 0px -35% 0px");
     expect(row).not.toHaveClass("in");
     fire(true);
     expect(row).toHaveClass("in");

@@ -11,7 +11,17 @@ describe("QuickAnswers", () => {
   it('initial text is "Pick a question."', () => {
     render(<QuickAnswers />);
     expect(answer()).toHaveTextContent("Pick a question.");
-    expect(answer()).toHaveAttribute("aria-live", "polite");
+  });
+
+  it("screen readers get the full answer once; the streaming text is aria-hidden", () => {
+    render(<QuickAnswers />);
+    fireEvent.click(screen.getByRole("button", { name: "Notice period?" }));
+    const live = screen.getByTestId("answer-live");
+    expect(live).toHaveAttribute("aria-live", "polite");
+    expect(live).toHaveTextContent("Two months.");
+    expect(answer()).toHaveAttribute("aria-hidden", "true");
+    act(() => vi.advanceTimersByTime(16 * 3));
+    expect(live).toHaveTextContent("Two months.");
   });
 
   it('tapping "Notice period?" streams to "Two months." and sets aria-pressed', () => {

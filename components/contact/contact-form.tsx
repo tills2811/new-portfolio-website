@@ -3,9 +3,10 @@
 import { type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { sendEmail } from "@/actions/sendEmail";
+import { contactLinks } from "@/lib/data";
 
 const field =
-  "w-full rounded-lg border-2 border-black bg-white px-4 py-3 text-[16px] text-black placeholder:text-black/50 focus-visible:outline-tomato";
+  "w-full rounded-lg border-2 border-black bg-white px-4 py-3 text-[16px] text-black placeholder:text-black/50";
 
 export default function ContactForm() {
   const [pending, setPending] = useState(false);
@@ -22,6 +23,9 @@ export default function ContactForm() {
       }
       toast.success("Message sent");
       form.reset();
+    } catch {
+      // The action itself failed (network, server error, missing API key).
+      toast.error(`Couldn't send your message. Email me at ${contactLinks.email} instead.`);
     } finally {
       setPending(false);
     }

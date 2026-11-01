@@ -43,6 +43,17 @@ describe("ContactForm", () => {
     expect(toast.success).not.toHaveBeenCalled();
   });
 
+  it("rejected action (e.g. missing API key): error toast and message kept", async () => {
+    sendEmail.mockRejectedValue(new Error("Missing API key"));
+    render(<ContactForm />);
+    fill();
+    submit();
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(toast.error.mock.calls[0][0]).toMatch(/couldn't send/i);
+    expect(screen.getByLabelText("Message")).toHaveValue("Hi Shreyash");
+    expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled();
+  });
+
   it("button disabled while pending", async () => {
     let resolve!: (v: unknown) => void;
     sendEmail.mockReturnValue(new Promise((r) => (resolve = r)));

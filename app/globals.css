@@ -45,6 +45,12 @@
     outline: 3px solid var(--tomato);
     outline-offset: 3px;
   }
+  /* tomato on tomato/lilac/butter fails 3:1; use black there */
+  .bg-tomato :focus-visible,
+  .bg-lilac :focus-visible,
+  .bg-butter :focus-visible {
+    outline-color: #000;
+  }
   [id] {
     scroll-margin-top: 88px;
   }
@@ -103,7 +109,7 @@
 }
 
 /* case study frames: rise in once when the row enters view */
-.frames .fr {
+.js .frames .fr {
   opacity: 0;
   transform: translateY(16px);
 }

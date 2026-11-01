@@ -23,7 +23,7 @@ export default function Frames({
   size?: "card" | "page";
   tone?: Tone;
 }) {
-  const [ref, inView] = useInView<HTMLOListElement>({ threshold: 0.35, once: true });
+  const [ref, inView] = useInView<HTMLOListElement>({ rootMargin: "0px 0px -35% 0px", once: true });
   const reduced = useReducedMotion();
   const page = size === "page";
 

@@ -57,9 +57,13 @@ export default function QuickAnswers() {
           </button>
         ))}
       </div>
+      {/* Screen readers get the full answer once; the visual stream is hidden from them. */}
+      <p data-testid="answer-live" aria-live="polite" className="sr-only">
+        {active === null ? "" : quickAnswers[active].a}
+      </p>
       <p
         data-testid="answer"
-        aria-live="polite"
+        aria-hidden="true"
         className={`min-h-[112px] rounded-lg bg-white px-5 py-[18px] text-[17px] leading-normal text-black ${
           typing ? "typing" : ""
         }`}
