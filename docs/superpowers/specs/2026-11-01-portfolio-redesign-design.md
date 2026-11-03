@@ -68,9 +68,9 @@ The campaign colours stay the same in both themes. Colour blocks always use blac
 
 1. **Nav:** "Shreyash Arali" on the left. Work, Experience and Contact (anchor links), the theme toggle and a "Download CV" pill on the right. Sticky, gaining a page-coloured background once scrolled.
 2. **Hero** (two columns):
-   - Left: h1 "I take products from an empty repo to production.", then the lede: "Full-stack engineer (Next.js, Python, LangGraph). I've built three AI products from scratch to real users: BrandStream at THG Ingenuity, iContent and iTranslate at Harbinger." Below it, a pill naming the current project ("BrandStream, THG Ingenuity") and a **Next project** button.
-   - Right: a 3×2 grid of build-journey tiles, one per stage (Idea, POC, Prototype, v1, Production, Adopted), each with that project's milestone. Captioned "How each product went from idea to production."
-   - Revised 2026-11-02: the hero is about how Shreyash works, not about one company product.
+   - Left: h1 "I take products from an empty repo to production.", then the lede: "Full-stack engineer (Next.js, Python, LangGraph). I've built three AI products from scratch to real users: BrandStream at THG Ingenuity, iContent and iTranslate at Harbinger." Below it, two pills: **See my work** (to `#work`) and **Download CV**.
+   - Right: a 3×2 grid of method tiles, one per stage (Idea, POC, Prototype, v1, Production, Adopted), each with one line on how Shreyash works at that stage. Under it: "Done three times: BrandStream, iContent and iTranslate." with each name linking to its case study.
+   - Revised 2026-11-03: the tiles describe the method, not one product, so they need no context to read; the projects below are the proof.
 3. **Fit band:** a full-width ink strip with four cells:
    - 3+ years, shipping production apps
    - Next.js, React, TS: front end
@@ -165,9 +165,9 @@ The long-form text for the case study pages (problem paragraphs, frame explanati
 | Strongest project? | BrandStream. I built it full-stack from an empty repo to the tool every internal team at THG now uses instead of Magnific. |
 | What role next? | Full-stack or AI engineering roles where I own features end to end, from the React interface to the Python services and LLM workflows behind it. |
 
-### Hero journeys
+### Hero method
 
-Each production project has six milestones (`journey` in `lib/data.ts`), one per stage. They are drawn only from the facts above, for example BrandStream's last stage is "Replaced Magnific" and iContent's is "Courses in 2–4 hours". The prototype has no journey.
+`method` in `lib/data.ts`, one line per stage (draft, for Shreyash to confirm): Start from the user's problem, not the model / A working demo on real data, fast / In front of real users early / Hardened: auth, errors, edge cases / Deployed, monitored, kept running / Success means people switch to it.
 
 ### Metadata
 
@@ -182,10 +182,9 @@ Each production project has six milestones (`journey` in `lib/data.ts`), one per
 
 All motion respects `prefers-reduced-motion`. When reduced motion is on, everything renders in its final state and nothing loops.
 
-1. **Hero build journey** (the signature moment):
-   - Every 8s the grid moves to the next project: all 6 tiles wipe (clip-path out, then in, 0.6s) with a 90ms stagger and repaint with that project's milestones and colours.
-   - Pauses while the pointer is over the grid, while the tab is hidden, and while the hero is off-screen (IntersectionObserver).
-   - **Next project** does the same immediately and restarts the 8s timer.
+1. **Hero method tiles** (the signature moment):
+   - When the grid enters view, the six tiles rise in once with a 120ms stagger.
+   - Then a highlight (3px ink ring, lifted 8px) walks one stage every 1.6s and wraps, pausing while the pointer is over the grid or the tab is hidden.
 2. **Case frames:** when a frame row enters the viewport (35% visible), the frames rise in once, 0.5s each with a 120ms stagger. They don't animate again.
 3. **Skill → project highlight:** on hover or focus of a skill pill, the case cards that don't use it fade to 25% opacity and matching cards scale to 1.01. Keyboard focus triggers the same effect.
 4. **Quick answers:** tapping a chip marks it pressed and streams its answer at about 16ms per character, ending with a blinking caret. Tapping another chip cancels the current stream. The answer region is `aria-live="polite"`.
@@ -291,7 +290,7 @@ type Brief = { text: string; lines: string[] };
 - `npm run lint` and `npm run build` pass.
 - Run locally, then screenshot home and one case study in light and dark mode, at mobile and desktop widths. Compare against the reference preview.
 - Manually check:
-  - Next project cycles BrandStream, iContent, iTranslate.
+  - Hero tiles rise in, then the highlight walks the stages and pauses on hover.
   - Tiles pause on hover.
   - Skill hover and focus highlights the right cards.
   - Quick answers stream, and cancel when another is tapped.

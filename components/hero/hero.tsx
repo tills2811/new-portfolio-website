@@ -1,3 +1,4 @@
+import Link from "next/link";
 import TileGrid from "./tile-grid";
 
 export default function Hero() {
@@ -11,6 +12,14 @@ export default function Hero() {
           Full-stack engineer (Next.js, Python, LangGraph). I&apos;ve built three AI products from scratch to real
           users: BrandStream at THG Ingenuity, iContent and iTranslate at Harbinger.
         </p>
+        <div className="mt-[26px] flex flex-wrap gap-2.5">
+          <Link href="/#work" className="pill">
+            See my work
+          </Link>
+          <a href="/CV.pdf" download className="pill pill-ghost">
+            Download CV
+          </a>
+        </div>
       </TileGrid>
     </section>
   );

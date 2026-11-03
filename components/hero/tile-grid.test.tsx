@@ -15,11 +15,12 @@ class IO {
   disconnect() {}
 }
 
-const lines = () => screen.getAllByTestId("tile").map((t) => t.getAttribute("data-line"));
-const label = () => screen.getByTestId("journey-project").textContent;
-const SETTLE = 6 * 90 + 700;
+const tiles = () => screen.getAllByTestId("tile");
+const active = () => tiles().findIndex((t) => t.getAttribute("data-active") === "true");
+const REVEAL = 6 * 120 + 600;
+const STEP = 1600;
 
-describe("TileGrid (build journey)", () => {
+describe("TileGrid (method)", () => {
   beforeEach(() => {
     intersecting = true;
     vi.useFakeTimers();
@@ -31,75 +32,74 @@ describe("TileGrid (build journey)", () => {
     vi.unstubAllGlobals();
   });
 
-  it("first render shows BrandStream's journey, Idea to Adopted", () => {
+  it("renders the six method stages in order", () => {
     render(<TileGrid />);
-    expect(label()).toMatch(/BrandStream/);
-    const stages = screen.getAllByTestId("tile").map((t) => t.getAttribute("data-stage"));
-    expect(stages).toEqual(["Idea", "POC", "Prototype", "v1", "Production", "Adopted"]);
-    expect(lines()[5]).toBe("Replaced Magnific");
+    expect(tiles().map((t) => t.getAttribute("data-stage"))).toEqual([
+      "Idea",
+      "POC",
+      "Prototype",
+      "v1",
+      "Production",
+      "Adopted",
+    ]);
+    expect(screen.queryByRole("button", { name: "Next project" })).toBeNull();
   });
 
-  it("Next project switches the label now and repaints every tile", () => {
+  it('reveals the tiles once in view ("in" class on the grid)', () => {
     render(<TileGrid />);
-    const before = lines();
-    fireEvent.click(screen.getByRole("button", { name: "Next project" }));
-    expect(label()).toMatch(/iContent/);
-    act(() => vi.advanceTimersByTime(SETTLE));
-    lines().forEach((l, i) => expect(l).not.toBe(before[i]));
+    expect(screen.getByTestId("tiles")).toHaveClass("in");
   });
 
-  it("cycles to the next project on its own every 8s", () => {
-    render(<TileGrid />);
-    act(() => vi.advanceTimersByTime(8000));
-    expect(label()).toMatch(/iContent/);
-    act(() => vi.advanceTimersByTime(8000));
-    expect(label()).toMatch(/iTranslate/);
-    act(() => vi.advanceTimersByTime(8000));
-    expect(label()).toMatch(/BrandStream/);
-  });
-
-  it("does not auto-cycle while the pointer is over the grid", () => {
-    render(<TileGrid />);
-    fireEvent.mouseEnter(screen.getByTestId("tiles"));
-    act(() => vi.advanceTimersByTime(20000));
-    expect(label()).toMatch(/BrandStream/);
-  });
-
-  it("does not auto-cycle when document.hidden", () => {
-    Object.defineProperty(document, "hidden", { value: true, configurable: true });
-    render(<TileGrid />);
-    act(() => vi.advanceTimersByTime(20000));
-    expect(label()).toMatch(/BrandStream/);
-  });
-
-  it("does not auto-cycle when out of view", () => {
+  it("does not reveal while out of view", () => {
     intersecting = false;
     render(<TileGrid />);
-    act(() => vi.advanceTimersByTime(20000));
-    expect(label()).toMatch(/BrandStream/);
+    expect(screen.getByTestId("tiles")).not.toHaveClass("in");
   });
 
-  it("with reduced motion: no auto-cycle, Next project repaints instantly without swap class", () => {
+  it("after the reveal, the highlight walks one stage every 1.6s and wraps", () => {
+    render(<TileGrid />);
+    expect(active()).toBe(-1);
+    act(() => vi.advanceTimersByTime(REVEAL));
+    expect(active()).toBe(0);
+    act(() => vi.advanceTimersByTime(STEP));
+    expect(active()).toBe(1);
+    act(() => vi.advanceTimersByTime(STEP * 5));
+    expect(active()).toBe(0);
+  });
+
+  it("the highlight pauses while the pointer is over the grid", () => {
+    render(<TileGrid />);
+    act(() => vi.advanceTimersByTime(REVEAL));
+    fireEvent.mouseEnter(screen.getByTestId("tiles"));
+    act(() => vi.advanceTimersByTime(STEP * 3));
+    expect(active()).toBe(0);
+    fireEvent.mouseLeave(screen.getByTestId("tiles"));
+    act(() => vi.advanceTimersByTime(STEP));
+    expect(active()).toBe(1);
+  });
+
+  it("the highlight pauses when document.hidden", () => {
+    render(<TileGrid />);
+    act(() => vi.advanceTimersByTime(REVEAL));
+    Object.defineProperty(document, "hidden", { value: true, configurable: true });
+    act(() => vi.advanceTimersByTime(STEP * 3));
+    expect(active()).toBe(0);
+  });
+
+  it("with reduced motion: revealed immediately and no walking highlight", () => {
     window.__reduceMotion = true;
     render(<TileGrid />);
-    act(() => vi.advanceTimersByTime(20000));
-    expect(label()).toMatch(/BrandStream/);
-    fireEvent.click(screen.getByRole("button", { name: "Next project" }));
-    expect(lines()[5]).toBe("Courses in 2–4 hours");
-    for (const t of screen.getAllByTestId("tile")) expect(t).not.toHaveClass("swap");
+    expect(screen.getByTestId("tiles")).toHaveClass("in");
+    act(() => vi.advanceTimersByTime(REVEAL + STEP * 4));
+    expect(active()).toBe(-1);
   });
 
-  it("clicking Next project resets the auto timer", () => {
-    render(<TileGrid />);
-    act(() => vi.advanceTimersByTime(6000));
-    fireEvent.click(screen.getByRole("button", { name: "Next project" }));
-    act(() => vi.advanceTimersByTime(6000));
-    expect(label()).toMatch(/iContent/);
-  });
-
-  it("tiles are aria-hidden and the journey is described in text", () => {
+  it("tiles are aria-hidden; the proof line links to the three case studies", () => {
     render(<TileGrid />);
     expect(screen.getByTestId("tiles")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.getByText("How each product went from idea to production.")).toBeInTheDocument();
+    expect(screen.getByText(/Done three times:/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "BrandStream" })).toHaveAttribute("href", "/work/brandstream");
+    expect(screen.getByRole("link", { name: "iContent" })).toHaveAttribute("href", "/work/icontent");
+    expect(screen.getByRole("link", { name: "iTranslate" })).toHaveAttribute("href", "/work/itranslate");
   });
 });

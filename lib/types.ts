@@ -23,8 +23,6 @@ export type Project = {
   outcome?: string;
   frames: Frame[];
   loopNote?: string;
-  /** six hero-tile milestones, one per stage (Idea … Adopted); production projects only */
-  journey?: string[];
   built: string[];
   screenshots?: { src: string; alt: string }[];
 };

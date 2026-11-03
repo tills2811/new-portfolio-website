@@ -142,3 +142,24 @@
   background: #000;
   animation: blink 1s steps(1) infinite;
 }
+
+/* hero method tiles: rise in once, then a highlight walks the stages */
+.js .method .mt {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.method.in .mt {
+  animation: up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.method.in .mt:nth-child(2) { animation-delay: 0.12s; }
+.method.in .mt:nth-child(3) { animation-delay: 0.24s; }
+.method.in .mt:nth-child(4) { animation-delay: 0.36s; }
+.method.in .mt:nth-child(5) { animation-delay: 0.48s; }
+.method.in .mt:nth-child(6) { animation-delay: 0.6s; }
+.method .mt {
+  transition: translate 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s;
+}
+.method .mt[data-active="true"] {
+  translate: 0 -8px;
+  box-shadow: 0 0 0 3px var(--ink);
+}

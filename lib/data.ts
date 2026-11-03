@@ -125,15 +125,6 @@ export const projects: Project[] = [
       },
     ],
     loopNote: "Step 4 feeds back into step 2.",
-    // DRAFT: review with Shreyash
-    journey: [
-      "Brief and photo in, ads out",
-      "Creatives from Gemini and Freepik",
-      "Campaigns launched on Meta",
-      "Results feed the next round",
-      "Live for THG's internal teams",
-      "Replaced Magnific",
-    ],
     built: [
       "Built the product from an empty repo, from POC to the tool every internal team uses.",
       "Next.js interface for briefs, creative review and campaign monitoring.",
@@ -166,15 +157,6 @@ export const projects: Project[] = [
       },
       { title: "Package course", detail: "Everything is packaged into a finished course." },
     ],
-    // DRAFT: review with Shreyash
-    journey: [
-      "A course from one document",
-      "Chapters and outlines by agents",
-      "Storyboards the team can edit",
-      "AI creatives, like a presenter",
-      "50+ courses, 5–6 clients",
-      "Courses in 2–4 hours",
-    ],
     built: [
       "Took the platform from POC to a product used by 20+ people and external clients.",
       "Agent workflows in LangChain and LangGraph for outlines, storyboards and quizzes.",
@@ -201,15 +183,6 @@ export const projects: Project[] = [
       { title: "Extract text and structure", detail: "Text is pulled out with its structure kept intact." },
       { title: "LLM translation", detail: "An LLM workflow translates the content into each target language." },
       { title: "Rebuild in 30+ languages", detail: "The course is rebuilt in every language." },
-    ],
-    // DRAFT: review with Shreyash
-    journey: [
-      "One course, every language",
-      "LLM translation of course text",
-      "Structure kept intact",
-      "Rebuilt course per language",
-      "Shipped to 5–6 clients",
-      "30+ languages, one upload",
     ],
     built: [
       "Took the product from POC to client delivery.",
@@ -280,6 +253,12 @@ export const tilePalette: [bg: string, fg: string][] = [
   ["#BFA8FF", "#000"],
 ];
 
-export const stages = ["Idea", "POC", "Prototype", "v1", "Production", "Adopted"] as const;
-
-export const journeyProjects = projects.filter((p) => p.journey);
+// How Shreyash takes a product from an empty repo to production. DRAFT: review with Shreyash
+export const method: { stage: string; line: string }[] = [
+  { stage: "Idea", line: "Start from the user's problem, not the model" },
+  { stage: "POC", line: "A working demo on real data, fast" },
+  { stage: "Prototype", line: "In front of real users early" },
+  { stage: "v1", line: "Hardened: auth, errors, edge cases" },
+  { stage: "Production", line: "Deployed, monitored, kept running" },
+  { stage: "Adopted", line: "Success means people switch to it" },
+];

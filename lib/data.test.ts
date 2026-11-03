@@ -24,10 +24,9 @@ describe("content", () => {
     expect(getProject("rag-prototype")?.kind).toBe("prototype");
   });
 
-  it("every production project has a 6-step journey; the prototype has none", () => {
+  it("no project carries hero journey data any more", () => {
     for (const p of projects) {
-      if (p.kind === "production") expect(p.journey).toHaveLength(6);
-      else expect(p.journey).toBeUndefined();
+      expect((p as { journey?: unknown }).journey).toBeUndefined();
     }
   });
 
