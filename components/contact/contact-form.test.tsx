@@ -65,6 +65,11 @@ describe("ContactForm", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled());
   });
 
+  it("submitting before hydration never puts the message in the URL (method is post)", () => {
+    render(<ContactForm />);
+    expect(screen.getByRole("button", { name: "Send message" }).closest("form")).toHaveAttribute("method", "post");
+  });
+
   it("fields have required and length limits", () => {
     render(<ContactForm />);
     expect(screen.getByLabelText("Your email")).toHaveAttribute("maxLength", "500");

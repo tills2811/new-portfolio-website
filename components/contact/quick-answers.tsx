@@ -10,6 +10,9 @@ export default function QuickAnswers() {
   const [active, setActive] = useState<number | null>(null);
   const [text, setText] = useState("Pick a question.");
   const [typing, setTyping] = useState(false);
+  // Separate from the visual stream; cleared then re-set so asking again re-announces.
+  const [spoken, setSpoken] = useState("");
+  const speakTimer = useRef<number | null>(null);
   const timer = useRef<number | null>(null);
   const reduced = useReducedMotion();
 
@@ -17,12 +20,21 @@ export default function QuickAnswers() {
     if (timer.current !== null) window.clearInterval(timer.current);
     timer.current = null;
   };
-  useEffect(() => stop, []);
+  useEffect(
+    () => () => {
+      stop();
+      if (speakTimer.current !== null) window.clearTimeout(speakTimer.current);
+    },
+    []
+  );
 
   const ask = (i: number) => {
     stop();
     setActive(i);
     const full = quickAnswers[i].a;
+    setSpoken("");
+    if (speakTimer.current !== null) window.clearTimeout(speakTimer.current);
+    speakTimer.current = window.setTimeout(() => setSpoken(full), 30);
     if (reduced) {
       setTyping(false);
       setText(full);
@@ -59,7 +71,7 @@ export default function QuickAnswers() {
       </div>
       {/* Screen readers get the full answer once; the visual stream is hidden from them. */}
       <p data-testid="answer-live" aria-live="polite" className="sr-only">
-        {active === null ? "" : quickAnswers[active].a}
+        {spoken}
       </p>
       <p
         data-testid="answer"

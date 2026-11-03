@@ -5,13 +5,18 @@ import { afterEach } from "vitest";
 declare global {
   interface Window {
     __reduceMotion?: boolean;
+    __noHover?: boolean;
   }
 }
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query: string) => ({
-    matches: query.includes("reduce") ? window.__reduceMotion === true : false,
+    matches: query.includes("reduce")
+      ? window.__reduceMotion === true
+      : query.includes("hover: hover")
+        ? window.__noHover !== true
+        : false,
     media: query,
     onchange: null,
     addEventListener: () => {},
@@ -25,4 +30,5 @@ Object.defineProperty(window, "matchMedia", {
 afterEach(() => {
   cleanup();
   window.__reduceMotion = false;
+  window.__noHover = false;
 });

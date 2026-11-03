@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { projects } from "@/lib/data";
 import { methodTiles, type Tile } from "@/lib/tiles";
 import { useInView } from "@/lib/use-in-view";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -11,11 +12,7 @@ const TILES = methodTiles();
 const REVEAL = TILES.length * 120 + 600;
 const STEP = 1600;
 
-const proof = [
-  { id: "brandstream", title: "BrandStream" },
-  { id: "icontent", title: "iContent" },
-  { id: "itranslate", title: "iTranslate" },
-];
+const proof = projects.filter((p) => p.kind === "production");
 
 function TileCard({ tile, index, active }: { tile: Tile; index: number; active: boolean }) {
   return (
@@ -23,7 +20,7 @@ function TileCard({ tile, index, active }: { tile: Tile; index: number; active: 
       data-testid="tile"
       data-stage={tile.stage}
       data-active={active}
-      className="mt relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-md p-3.5 shadow-[inset_0_0_0_1px_var(--hair)]"
+      className="mt relative flex aspect-[5/4] flex-col min-[480px]:aspect-[4/5] justify-between overflow-hidden rounded-md p-3.5 shadow-[inset_0_0_0_1px_var(--hair)]"
       style={{ background: tile.bg, color: tile.fg }}
     >
       <span className="flex items-baseline justify-between text-xs font-semibold">
@@ -31,7 +28,7 @@ function TileCard({ tile, index, active }: { tile: Tile; index: number; active: 
         <span className="opacity-60">{index + 1}</span>
       </span>
       <span
-        className="text-[clamp(15px,1.45vw,20px)] leading-[0.98]"
+        className="text-[17px] leading-[0.98] min-[480px]:text-[clamp(15px,1.45vw,20px)]"
         style={{ fontVariationSettings: '"wdth" 72', fontWeight: 800 }}
       >
         {tile.line}
@@ -75,8 +72,11 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
           ref={gridRef}
           data-testid="tiles"
           aria-hidden="true"
-          className={`method grid grid-cols-3 gap-2.5 ${inView || reduced ? "in" : ""}`}
-          onMouseEnter={() => (hovered.current = true)}
+          className={`method grid grid-cols-2 gap-2.5 min-[480px]:grid-cols-3 ${inView || reduced ? "in" : ""}`}
+          // Touch screens fire mouseenter on tap but no mouseleave, which would freeze the walk.
+          onMouseEnter={() => {
+            if (window.matchMedia("(hover: hover)").matches) hovered.current = true;
+          }}
           onMouseLeave={() => (hovered.current = false)}
         >
           {TILES.map((tile, i) => (
@@ -90,7 +90,7 @@ export default function TileGrid({ children }: { children?: ReactNode }) {
               <Link href={`/work/${p.id}`} className="font-semibold text-ink underline decoration-2 underline-offset-4">
                 {p.title}
               </Link>
-              {i === 0 ? ", " : i === 1 ? " and " : "."}
+              {i < proof.length - 2 ? ", " : i === proof.length - 2 ? " and " : "."}
             </span>
           ))}
         </p>

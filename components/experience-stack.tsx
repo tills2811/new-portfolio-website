@@ -10,8 +10,9 @@ const swatch: Record<Colour, string> = {
   blush: "bg-blush",
 };
 
-export default function ExperienceStack({ onSkill }: { onSkill: (uses: ProjectId[] | null) => void }) {
-  const clear = () => onSkill(null);
+type OnSkill = (uses: ProjectId[] | null) => void;
+
+export default function ExperienceStack({ onHover, onFocus }: { onHover: OnSkill; onFocus: OnSkill }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-14 min-[900px]:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <ol>
@@ -46,10 +47,10 @@ export default function ExperienceStack({ onSkill }: { onSkill: (uses: ProjectId
                     <button
                       type="button"
                       className="cursor-default rounded-full border-[1.5px] border-ink px-3 py-1.5 text-[15px] font-medium transition-colors hover:bg-ink hover:text-page focus-visible:bg-ink focus-visible:text-page"
-                      onMouseEnter={() => onSkill(s.uses)}
-                      onFocus={() => onSkill(s.uses)}
-                      onMouseLeave={clear}
-                      onBlur={clear}
+                      onMouseEnter={() => onHover(s.uses)}
+                      onMouseLeave={() => onHover(null)}
+                      onFocus={() => onFocus(s.uses)}
+                      onBlur={() => onFocus(null)}
                     >
                       {s.name}
                     </button>

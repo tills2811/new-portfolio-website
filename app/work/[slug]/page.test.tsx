@@ -61,6 +61,12 @@ describe("case study page", () => {
     expect(generateMetadata({ params: { slug: "icontent" } }).title).toBe("iContent, Shreyash Arali");
   });
 
+  it("share previews get og:title and og:description", () => {
+    const og = generateMetadata({ params: { slug: "brandstream" } }).openGraph;
+    expect(og?.title).toBe("BrandStream, Shreyash Arali");
+    expect(og?.description).toMatch(/AI creative and campaign platform/);
+  });
+
   it("shows each frame's detail text", () => {
     renderSlug("icontent");
     expect(screen.getByText("An agent breaks the document into a chapter structure.")).toBeInTheDocument();

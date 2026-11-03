@@ -78,6 +78,15 @@ describe("TileGrid (method)", () => {
     expect(active()).toBe(1);
   });
 
+  it("on a touch device a tap on the grid does not freeze the highlight", () => {
+    window.__noHover = true;
+    render(<TileGrid />);
+    act(() => vi.advanceTimersByTime(REVEAL));
+    fireEvent.mouseEnter(screen.getByTestId("tiles"));
+    act(() => vi.advanceTimersByTime(STEP * 2));
+    expect(active()).toBe(2);
+  });
+
   it("the highlight pauses when document.hidden", () => {
     render(<TileGrid />);
     act(() => vi.advanceTimersByTime(REVEAL));

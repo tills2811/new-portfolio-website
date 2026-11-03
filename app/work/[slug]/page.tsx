@@ -15,7 +15,9 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: Props): Metadata {
   const p = getProject(params.slug);
-  return p ? { title: `${p.title}, Shreyash Arali`, description: p.summary } : {};
+  if (!p) return {};
+  const title = `${p.title}, Shreyash Arali`;
+  return { title, description: p.summary, openGraph: { title, description: p.summary } };
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -53,7 +55,7 @@ export default function CaseStudyPage({ params }: Props) {
             {project.org}, {project.period}
           </span>
         )}
-        <h1 className="cond mt-3 text-[clamp(64px,8.4vw,120px)]">{project.title}</h1>
+        <h1 className="cond mt-3 break-words text-[clamp(44px,12vw,120px)] min-[900px]:text-[clamp(64px,8.4vw,120px)]">{project.title}</h1>
         <p className="mt-5 max-w-[48ch] text-lg">{project.summary}</p>
       </header>
 

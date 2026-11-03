@@ -32,7 +32,7 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="mt-7 grid max-w-[460px] gap-3">
+    <form method="post" onSubmit={onSubmit} className="mt-7 grid max-w-[460px] gap-3">
       <label className="grid gap-1 text-sm font-semibold">
         Your email
         <input name="senderEmail" type="email" required maxLength={500} className={field} autoComplete="email" />

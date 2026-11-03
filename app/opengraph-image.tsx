@@ -1,11 +1,12 @@
 import { ImageResponse } from "next/og";
+import { methodTiles } from "@/lib/tiles";
 
 export const runtime = "edge";
 export const alt = "Shreyash Arali: I take products from an empty repo to production.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const colours = ["#FF4D2E", "#BFA8FF", "#FFD43B", "#0B5D4B", "#8EC9FF", "#F4D6CC"];
+const colours = methodTiles().map((t) => t.bg);
 
 export default function OpengraphImage() {
   return new ImageResponse(

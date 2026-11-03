@@ -10,12 +10,15 @@ import "./globals.css";
 
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo" });
 
+const title = "Shreyash Arali, Full-stack and AI Engineer";
+const description =
+  "Full-stack engineer who takes products from an empty repo to production. Three AI products built from scratch to real users.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Shreyash Arali, Full-stack and AI Engineer",
-  description:
-    "Full-stack engineer who takes products from an empty repo to production. Three AI products built from scratch to real users.",
-  openGraph: { type: "website", siteName: "Shreyash Arali" },
+  title,
+  description,
+  openGraph: { type: "website", siteName: "Shreyash Arali", title, description },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

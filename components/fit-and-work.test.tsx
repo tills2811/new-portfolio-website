@@ -40,6 +40,17 @@ describe("FitAndWork", () => {
     expect(list()).toHaveAttribute("data-dim", "false");
   });
 
+  it("moving the mouse over and off another skill keeps the keyboard-focused skill's highlight", () => {
+    render(<FitAndWork />);
+    fireEvent.focus(skill("Gemini"));
+    fireEvent.mouseEnter(skill("MongoDB"));
+    expect(card("icontent")).toHaveAttribute("data-hl", "true");
+    fireEvent.mouseLeave(skill("MongoDB"));
+    expect(list()).toHaveAttribute("data-dim", "true");
+    expect(card("brandstream")).toHaveAttribute("data-hl", "true");
+    expect(card("icontent")).toHaveAttribute("data-hl", "false");
+  });
+
   it('hovering "Node.js" (uses []) sets no data-dim and no data-hl', () => {
     render(<FitAndWork />);
     fireEvent.mouseEnter(skill("Node.js"));

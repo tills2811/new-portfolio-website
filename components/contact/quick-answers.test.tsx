@@ -18,6 +18,7 @@ describe("QuickAnswers", () => {
     fireEvent.click(screen.getByRole("button", { name: "Notice period?" }));
     const live = screen.getByTestId("answer-live");
     expect(live).toHaveAttribute("aria-live", "polite");
+    act(() => vi.advanceTimersByTime(50));
     expect(live).toHaveTextContent("Two months.");
     expect(answer()).toHaveAttribute("aria-hidden", "true");
     act(() => vi.advanceTimersByTime(16 * 3));
@@ -48,6 +49,18 @@ describe("QuickAnswers", () => {
     }
     expect(answer()).toHaveTextContent("Two months.");
     expect(screen.getByRole("button", { name: "Strongest project?" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("asking the same question again re-announces the answer", () => {
+    render(<QuickAnswers />);
+    const chip = screen.getByRole("button", { name: "Notice period?" });
+    fireEvent.click(chip);
+    act(() => vi.advanceTimersByTime(50));
+    expect(screen.getByTestId("answer-live")).toHaveTextContent("Two months.");
+    fireEvent.click(chip);
+    expect(screen.getByTestId("answer-live")).toHaveTextContent("");
+    act(() => vi.advanceTimersByTime(50));
+    expect(screen.getByTestId("answer-live")).toHaveTextContent("Two months.");
   });
 
   it("reduced motion shows full answer immediately", () => {

@@ -45,14 +45,17 @@
     outline: 3px solid var(--tomato);
     outline-offset: 3px;
   }
-  /* tomato on tomato/lilac/butter fails 3:1; use black there */
+  /* tomato fails 3:1 on tomato, lilac, butter and pine; use black there (white on pine) */
   .bg-tomato :focus-visible,
   .bg-lilac :focus-visible,
   .bg-butter :focus-visible {
     outline-color: #000;
   }
+  .bg-pine :focus-visible {
+    outline-color: var(--on-pine);
+  }
   [id] {
-    scroll-margin-top: 88px;
+    scroll-margin-top: 112px;
   }
 }
 

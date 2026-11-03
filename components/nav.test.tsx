@@ -18,6 +18,13 @@ describe("Nav", () => {
     expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/#contact");
   });
 
+  it("phones get the section links too (a second row below 900px)", () => {
+    renderNav();
+    const row = screen.getByTestId("nav-links");
+    expect(row.querySelectorAll("a")).toHaveLength(3);
+    expect(row.querySelector('a[href="/#contact"]')).not.toBeNull();
+  });
+
   it("CV link has download attribute and href /CV.pdf", () => {
     renderNav();
     const cv = screen.getByRole("link", { name: "Download CV" });
