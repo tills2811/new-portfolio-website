@@ -1,19 +1,26 @@
 /** @type {import('tailwindcss').Config} */
+const token = (name) => `var(--${name})`;
+
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        page: token("page"),
+        ink: token("ink"),
+        "ink-2": token("ink-2"),
+        muted: token("muted"),
+        hair: token("hair"),
+        tomato: token("tomato"),
+        lilac: token("lilac"),
+        butter: token("butter"),
+        pine: token("pine"),
+        sky: token("sky"),
+        blush: token("blush"),
+        "on-pine": token("on-pine"),
       },
     },
   },
   plugins: [],
-  darkMode: "class",
 };

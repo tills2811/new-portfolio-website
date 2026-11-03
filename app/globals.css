@@ -2,14 +2,167 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    --line-color:  #e5e7eb
+:root {
+  --page: #ffffff;
+  --ink: #000000;
+  --ink-2: #2a2a2a;
+  --muted: #5e5e5e;
+  --hair: #dcdcdc;
+  --tomato: #ff4d2e;
+  --lilac: #bfa8ff;
+  --butter: #ffd43b;
+  --pine: #0b5d4b;
+  --sky: #8ec9ff;
+  --blush: #f4d6cc;
+  --on-pine: #f2fff8;
+  color-scheme: light;
 }
 
-html.dark {
-    --line-color: rgba(255, 255, 255, 0.2)
+.dark {
+  --page: #000000;
+  --ink: #ffffff;
+  --ink-2: #d6d6d6;
+  --muted: #9a9a9a;
+  --hair: #2e2e2e;
+  color-scheme: dark;
 }
 
-.borderBlack{
-    @apply border border-black/10;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    font-variation-settings: "wdth" 100;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  :focus-visible {
+    outline: 3px solid var(--tomato);
+    outline-offset: 3px;
+  }
+  /* tomato fails 3:1 on tomato, lilac, butter and pine; use black there (white on pine) */
+  .bg-tomato :focus-visible,
+  .bg-lilac :focus-visible,
+  .bg-butter :focus-visible {
+    outline-color: #000;
+  }
+  .bg-pine :focus-visible {
+    outline-color: var(--on-pine);
+  }
+  [id] {
+    scroll-margin-top: 112px;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto max-w-[1240px] px-4 min-[900px]:px-10;
+  }
+  .cond {
+    font-variation-settings: "wdth" 62;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+    line-height: 0.88;
+  }
+  .subcond {
+    font-variation-settings: "wdth" 72;
+    font-weight: 800;
+    line-height: 0.95;
+  }
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-ink bg-ink px-5 py-[11px] text-[15px] font-semibold text-page no-underline transition-transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .pill-ghost {
+    @apply bg-transparent text-ink;
+  }
+}
+
+@keyframes wipe {
+  0% { clip-path: inset(0); }
+  45% { clip-path: inset(0 0 100% 0); }
+  55% { clip-path: inset(100% 0 0 0); }
+  100% { clip-path: inset(0); }
+}
+@keyframes up {
+  to { opacity: 1; transform: none; }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.band-rule {
+  border-color: color-mix(in srgb, var(--page) 30%, transparent);
+}
+
+/* case study frames: rise in once when the row enters view */
+.js .frames .fr {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.frames.in .fr {
+  animation: up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.frames.in .fr:nth-child(2) { animation-delay: 0.12s; }
+.frames.in .fr:nth-child(3) { animation-delay: 0.24s; }
+.frames.in .fr:nth-child(4) { animation-delay: 0.36s; }
+.frames.in .fr:nth-child(5) { animation-delay: 0.48s; }
+
+/* skill -> project highlight */
+.work-list [data-project] {
+  transition: opacity 0.25s, transform 0.25s;
+}
+.work-list[data-dim="true"] [data-hl="false"] {
+  opacity: 0.25;
+}
+.work-list[data-dim="true"] [data-hl="true"] {
+  transform: scale(1.01);
+}
+
+.typing::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  margin-left: 2px;
+  vertical-align: -3px;
+  background: #000;
+  animation: blink 1s steps(1) infinite;
+}
+
+/* hero method tiles: rise in once, then a highlight walks the stages */
+.js .method .mt {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.method.in .mt {
+  animation: up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.method.in .mt:nth-child(2) { animation-delay: 0.12s; }
+.method.in .mt:nth-child(3) { animation-delay: 0.24s; }
+.method.in .mt:nth-child(4) { animation-delay: 0.36s; }
+.method.in .mt:nth-child(5) { animation-delay: 0.48s; }
+.method.in .mt:nth-child(6) { animation-delay: 0.6s; }
+.method .mt {
+  transition: translate 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s;
+}
+.method .mt[data-active="true"] {
+  translate: 0 -8px;
+  box-shadow: 0 0 0 3px var(--ink);
 }
