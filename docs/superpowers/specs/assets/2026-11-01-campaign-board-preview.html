@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campaign board preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#FFFFFF; --ink:#000000; --ink-2:#2A2A2A; --muted:#5E5E5E; --rule:#000000; --hair:#DCDCDC; --chip:#F2F2F2;
+    --tomato:#FF4D2E; --lilac:#BFA8FF; --butter:#FFD43B; --pine:#0B5D4B; --sky:#8EC9FF; --blush:#F4D6CC;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#000;--ink:#FFF;--ink-2:#D6D6D6;--muted:#9A9A9A;--rule:#FFF;--hair:#2E2E2E;--chip:#161616}}
+  :root[data-theme="dark"]{--page:#000;--ink:#FFF;--ink-2:#D6D6D6;--muted:#9A9A9A;--rule:#FFF;--hair:#2E2E2E;--chip:#161616}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--page);color:var(--ink);font:400 17px/1.55 'Archivo',sans-serif;font-variation-settings:'wdth' 100;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--tomato);outline-offset:3px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+  .cond{font-variation-settings:'wdth' 62;font-weight:800;letter-spacing:-.005em;line-height:.88}
+  h1,h2,h3{margin:0}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-weight:500;font-size:15px}
+  nav .mark{font-weight:700;text-decoration:none;font-size:17px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{text-decoration:none}
+  nav .links a:hover{text-decoration:underline;text-underline-offset:4px}
+  .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font:600 15px 'Archivo';border:2px solid var(--ink);background:var(--ink);color:var(--page);text-decoration:none;cursor:pointer;transition:transform .15s}
+  .pill.ghost{background:transparent;color:var(--ink)}
+  .pill:hover{transform:translateY(-2px)}
+  .pill:active{transform:none}
+  .tgl{width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;font-size:15px}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:end;padding:56px 0 64px}
+  .hero h1{font-size:clamp(64px,8.4vw,120px)}
+  .hero .sub{font-size:18px;color:var(--ink-2);max-width:42ch;margin:26px 0 0}
+  .brief{margin-top:26px;display:flex;align-items:center;gap:10px;border:2px solid var(--ink);border-radius:999px;padding:6px 6px 6px 18px;max-width:480px}
+  .brief span{flex:1;font-size:15px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brief button{border:0}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tile{aspect-ratio:4/5;border-radius:6px;box-shadow:inset 0 0 0 1px var(--hair);position:relative;overflow:hidden;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+  .tile .v{font-size:12px;font-weight:600;opacity:.75;position:relative}
+  .tile .line{font-variation-settings:'wdth' 72;font-weight:800;font-size:clamp(17px,1.9vw,24px);line-height:.95;position:relative}
+  .tile svg{position:absolute;right:14px;top:14px;width:28%}
+  .tile.swap{animation:wipe .6s cubic-bezier(.7,0,.2,1)}
+  @keyframes wipe{0%{clip-path:inset(0)}45%{clip-path:inset(0 0 100% 0)}55%{clip-path:inset(100% 0 0 0)}100%{clip-path:inset(0)}}
+  .cap{font-size:13px;color:var(--muted);margin-top:10px}
+
+  /* fit band */
+  .band{background:var(--ink);color:var(--page)}
+  .band .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+  .band div div{padding:22px 20px 22px 0}
+  .band div div+div{padding-left:20px;border-left:1px solid color-mix(in srgb,var(--page) 30%,transparent)}
+  .band b{display:block;font-variation-settings:'wdth' 70;font-weight:800;font-size:26px;line-height:1}
+  .band span{font-size:14px;opacity:.75}
+
+  section{padding:110px 0 0}
+  .head{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-bottom:36px;border-bottom:3px solid var(--rule);padding-bottom:18px}
+  .head h2{font-size:clamp(48px,6vw,84px)}
+  .head p{margin:0;color:var(--muted);max-width:40ch;font-size:15px}
+
+  /* experience & stack */
+  .xs{display:grid;grid-template-columns:1.1fr .9fr;gap:56px}
+  .role{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--hair)}
+  .role:first-child{padding-top:0}
+  .role .when{font-size:14px;color:var(--muted);padding-top:6px}
+  .role h3{font-size:34px}
+  .role .org{font-weight:600;font-size:16px;margin-top:6px;display:block}
+  .role p{margin:6px 0 0;color:var(--ink-2);font-size:16px;max-width:52ch}
+  .layer{display:grid;grid-template-columns:14px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--hair)}
+  .layer:first-child{padding-top:0}
+  .layer i{width:14px;height:14px;border-radius:3px;margin-top:5px}
+  .layer h3{font-size:15px;font-weight:600;margin-bottom:10px}
+  .skills{display:flex;flex-wrap:wrap;gap:6px}
+  .skill{font:500 15px 'Archivo';padding:6px 12px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:default;transition:background .15s,color .15s}
+  .skill:hover,.skill:focus-visible{background:var(--ink);color:var(--page)}
+  .hint{font-size:14px;color:var(--muted);margin-top:14px}
+
+  /* work */
+  .work{display:grid;gap:18px}
+  .case{border-radius:10px;padding:36px;display:grid;grid-template-columns:1fr 1.15fr;gap:40px;color:#000;transition:opacity .25s,transform .25s}
+  .case.dark{color:#F2FFF8}
+  .work.dim .case{opacity:.25}
+  .work.dim .case.hl{opacity:1;transform:scale(1.01)}
+  .case .where{font-size:14px;font-weight:600;opacity:.75}
+  .case h3{font-size:clamp(40px,4.6vw,64px);margin:8px 0 18px}
+  .case dl{display:grid;grid-template-columns:90px 1fr;gap:8px 16px;margin:0;font-size:16px}
+  .case dt{font-weight:600;opacity:.7}
+  .case dd{margin:0}
+  .case .out{font-weight:700}
+  .case .more{display:inline-block;margin-top:22px;font-weight:700;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:2px}
+  .frames{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:8px;align-self:end}
+  .fr{background:rgba(255,255,255,.55);border-radius:6px;aspect-ratio:3/4;padding:10px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transform:translateY(16px)}
+  .case.dark .fr{background:rgba(255,255,255,.12)}
+  .fr .n{font-size:12px;font-weight:700}
+  .fr .t{font-variation-settings:'wdth' 75;font-weight:800;font-size:clamp(14px,1.35vw,18px);line-height:1}
+  .fr svg{width:60%;align-self:center}
+  .in .fr{animation:up .5s cubic-bezier(.2,.8,.2,1) forwards}
+  .in .fr:nth-child(2){animation-delay:.12s}.in .fr:nth-child(3){animation-delay:.24s}.in .fr:nth-child(4){animation-delay:.36s}.in .fr:nth-child(5){animation-delay:.48s}
+  @keyframes up{to{opacity:1;transform:none}}
+  .loopnote{grid-column:1/-1;font-size:13px;font-weight:600;opacity:.75;margin-top:2px}
+  .proto{border:2px dashed var(--ink);border-radius:10px;padding:24px 36px;display:flex;justify-content:space-between;gap:24px;align-items:center;flex-wrap:wrap}
+  .proto b{font-variation-settings:'wdth' 70;font-weight:800;font-size:28px}
+  .proto p{margin:4px 0 0;color:var(--ink-2);font-size:15px;max-width:70ch}
+
+  /* contact */
+  .contact{background:var(--butter);color:#000;border-radius:10px;padding:56px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;margin:110px 0 0}
+  .contact h2{font-size:clamp(52px,6vw,88px)}
+  .contact p{font-size:18px;max-width:40ch;margin:20px 0 26px}
+  .contact .pill{border-color:#000;background:#000;color:#FFD43B}
+  .contact .pill.ghost{background:transparent;color:#000}
+  .ask .lbl{font-weight:600;font-size:15px;margin-bottom:12px}
+  .qs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .q{font:600 15px 'Archivo';padding:9px 14px;border-radius:999px;border:2px solid #000;background:transparent;color:#000;cursor:pointer}
+  .q[aria-pressed="true"]{background:#000;color:#FFD43B}
+  .answer{background:#fff;border-radius:8px;padding:18px 20px;min-height:112px;font-size:17px;line-height:1.5}
+  .answer.typing::after{content:'';display:inline-block;width:8px;height:18px;background:#000;margin-left:2px;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  footer{display:flex;justify-content:space-between;padding:36px 0 48px;font-size:14px;color:var(--muted);flex-wrap:wrap;gap:12px}
+
+  @media (max-width:900px){
+    .wrap{padding:0 16px}
+    nav .links a:not(.pill){display:none}
+    .hero,.xs,.case,.contact{grid-template-columns:1fr}
+    .hero{padding-top:28px}
+    .band .wrap{grid-template-columns:1fr 1fr}
+    .band div div:nth-child(3){border-left:none;padding-left:0}
+    .role{grid-template-columns:1fr;gap:4px}
+    .case,.contact{padding:24px}
+    .frames{grid-template-columns:repeat(3,1fr)}
+    .head{flex-direction:column;align-items:start}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.fr{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Main">
+    <a class="mark" href="#">Shreyash Arali</a>
+    <div class="links">
+      <a href="#work">Work</a><a href="#exp">Experience</a><a href="#contact">Contact</a>
+      <button class="tgl" id="theme" aria-label="Toggle dark mode">◐</button>
+      <a class="pill" href="#" style="padding:8px 16px">Download CV</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1 class="cond">I build the AI tools that make the creative.</h1>
+      <p class="sub">Software Engineer at THG Ingenuity. I build BrandStream, which turns a brief and a product photo into campaign-ready creatives, launches them on Meta and learns from the results.</p>
+      <div class="brief"><span id="briefText">"Summer serum launch, Gen Z, playful"</span><button class="pill" id="gen">Generate</button></div>
+    </div>
+    <div>
+      <div class="tiles" id="tiles" aria-hidden="true"></div>
+      <div class="cap">Illustrative variants, not client work.</div>
+    </div>
+  </header>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <div><b>3+ years</b><span>shipping production apps</span></div>
+    <div><b>Next.js, React, TS</b><span>front end</span></div>
+    <div><b>Python, FastAPI, LangGraph</b><span>back end and AI</span></div>
+    <div><b>Pune or remote</b><span>2-month notice</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="exp">
+    <div class="head"><h2 class="cond">Experience and stack</h2><p>Hover a skill to see which projects use it.</p></div>
+    <div class="xs">
+      <div>
+        <div class="role"><span class="when">Oct 2025 – now</span><div><h3 class="cond">Software Engineer</h3><span class="org">THG Ingenuity</span><p>Full-stack on BrandStream, an AI creative and Meta campaign platform built from scratch.</p></div></div>
+        <div class="role"><span class="when">Jul 2023 – Oct 2025</span><div><h3 class="cond">Software Developer</h3><span class="org">Harbinger Group</span><p>Took iContent and iTranslate from POC to product, with 5–6 corporate clients onboarded.</p></div></div>
+        <div class="role"><span class="when">Feb – Nov 2022</span><div><h3 class="cond">Web Developer / Designer Intern</h3><span class="org">Aniworks Pvt. Ltd.</span></div></div>
+        <div class="role"><span class="when">2019 – 2023</span><div><h3 class="cond">B.E. Computer Engineering</h3><span class="org">MMCOE Pune, CGPA 8.8</span></div></div>
+      </div>
+      <div>
+        <div class="layer"><i style="background:var(--tomato)"></i><div><h3>Interface</h3><div class="skills">
+          <button class="skill" data-uses="bs ic it">Next.js</button><button class="skill" data-uses="bs ic it">React</button><button class="skill" data-uses="bs ic it">TypeScript</button><button class="skill" data-uses="bs ic">Tailwind</button></div></div></div>
+        <div class="layer"><i style="background:var(--lilac)"></i><div><h3>Services</h3><div class="skills">
+          <button class="skill" data-uses="bs ic it rag">Python</button><button class="skill" data-uses="bs ic it rag">FastAPI</button><button class="skill" data-uses="">Node.js</button></div></div></div>
+        <div class="layer"><i style="background:var(--butter)"></i><div><h3>AI</h3><div class="skills">
+          <button class="skill" data-uses="bs ic it rag">LangChain</button><button class="skill" data-uses="bs ic it">LangGraph</button><button class="skill" data-uses="ic it rag">OpenAI</button><button class="skill" data-uses="bs">Gemini</button><button class="skill" data-uses="bs">Freepik models</button><button class="skill" data-uses="rag">RAG</button></div></div></div>
+        <div class="layer"><i style="background:var(--pine)"></i><div><h3>Data and cloud</h3><div class="skills">
+          <button class="skill" data-uses="bs">PostgreSQL</button><button class="skill" data-uses="bs">Redis</button><button class="skill" data-uses="ic">MongoDB</button><button class="skill" data-uses="bs">GCP</button><button class="skill" data-uses="rag">FAISS</button></div></div></div>
+        <p class="hint">Try Gemini or LangGraph.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="head"><h2 class="cond">Selected work</h2><p>All three were built from scratch and taken from POC to production.</p></div>
+    <div class="work" id="worklist">
+      <article class="case" data-id="bs" style="background:var(--tomato)">
+        <div>
+          <span class="where">THG Ingenuity, 2025 – now</span>
+          <h3 class="cond">BrandStream</h3>
+          <dl><dt>Problem</dt><dd>Hundreds of beauty and fitness products need fresh ad creatives, and the tools making them weren't connected to ad results.</dd>
+          <dt>Role</dt><dd>Full-stack: Next.js front end, FastAPI services, model and Meta integrations.</dd>
+          <dt>Outcome</dt><dd class="out">Replaced Magnific for every internal team.</dd></dl>
+          <a class="more" href="#">Read the case study</a>
+        </div>
+        <div class="frames" style="--n:4">
+          <div class="fr"><span class="n">1</span><span class="t">Brief and product photo</span></div>
+          <div class="fr"><span class="n">2</span><span class="t">Generate creatives</span></div>
+          <div class="fr"><span class="n">3</span><span class="t">Launch on Meta</span></div>
+          <div class="fr"><span class="n">4</span><span class="t">Read results, optimise</span></div>
+          <span class="loopnote">Step 4 feeds back into step 2.</span>
+        </div>
+      </article>
+
+      <article class="case" data-id="ic" style="background:var(--lilac)">
+        <div>
+          <span class="where">Harbinger Group, 2023 – 2025</span>
+          <h3 class="cond">iContent</h3>
+          <dl><dt>Problem</dt><dd>Each corporate L&amp;D course took the creative team 1–1.5 days of manual work.</dd>
+          <dt>Role</dt><dd>Full-stack, including the LangGraph agent workflow.</dd>
+          <dt>Outcome</dt><dd class="out">Courses in 2–4 hours. 50+ produced, 5–6 clients onboarded.</dd></dl>
+          <a class="more" href="#">Read the case study</a>
+        </div>
+        <div class="frames" style="--n:5">
+          <div class="fr"><span class="n">1</span><span class="t">Upload document</span></div>
+          <div class="fr"><span class="n">2</span><span class="t">Split into chapters</span></div>
+          <div class="fr"><span class="n">3</span><span class="t">Storyboard</span></div>
+          <div class="fr"><span class="n">4</span><span class="t">Generate creatives</span></div>
+          <div class="fr"><span class="n">5</span><span class="t">Package course</span></div>
+        </div>
+      </article>
+
+      <article class="case dark" data-id="it" style="background:var(--pine)">
+        <div>
+          <span class="where">Harbinger Group, 2023 – 2025</span>
+          <h3 class="cond">iTranslate</h3>
+          <dl><dt>Problem</dt><dd>Clients need every course in many languages, and manual translation is slow and expensive.</dd>
+          <dt>Role</dt><dd>Full-stack, Next.js to the Python translation workflow.</dd>
+          <dt>Outcome</dt><dd class="out">One upload, 30+ languages. Shipped to the same client base.</dd></dl>
+          <a class="more" href="#">Read the case study</a>
+        </div>
+        <div class="frames" style="--n:4">
+          <div class="fr"><span class="n">1</span><span class="t">Upload course</span></div>
+          <div class="fr"><span class="n">2</span><span class="t">Extract text and structure</span></div>
+          <div class="fr"><span class="n">3</span><span class="t">LLM translation</span></div>
+          <div class="fr"><span class="n">4</span><span class="t">Rebuild in 30+ languages</span></div>
+        </div>
+      </article>
+
+      <div class="proto case" data-id="rag" style="padding:24px 36px;display:flex;background:transparent;color:var(--ink)">
+        <div><b>Prototype: RAG knowledge bot</b><p>An R&amp;D proof of concept at Harbinger. FastAPI, LangChain, OpenAI and FAISS, with hybrid retrieval that combines vector search and keyword matching.</p></div>
+        <a class="more" href="#" style="margin:0">How it works</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact" id="contact">
+    <div>
+      <h2 class="cond">Hiring for a full-stack or AI role?</h2>
+      <p>I'm open to remote or Pune-based roles, and I'd relocate for the right team.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="pill" href="#">Email me</a><a class="pill ghost" href="#">LinkedIn</a><a class="pill ghost" href="#">GitHub</a></div>
+    </div>
+    <div class="ask">
+      <div class="lbl">Quick answers</div>
+      <div class="qs" role="group" aria-label="Questions">
+        <button class="q" data-a="Two months.">Notice period?</button>
+        <button class="q" data-a="Yes. I'm open to remote or Pune-based teams, and I'd relocate for a strong opportunity.">Remote or relocation?</button>
+        <button class="q" data-a="BrandStream. I built it full-stack from an empty repo to the tool every internal team at THG now uses instead of Magnific.">Strongest project?</button>
+        <button class="q" data-a="Full-stack or AI engineering roles where I own features end to end, from the React interface to the Python services and LLM workflows behind it.">What role next?</button>
+      </div>
+      <div class="answer" id="answer" aria-live="polite">Pick a question.</div>
+    </div>
+  </div>
+
+  <footer><span>Shreyash Arali, Pune</span><span>Email · LinkedIn · GitHub</span></footer>
+</div>
+
+<script>
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,root=document.documentElement;
+  document.getElementById('theme').onclick=()=>{const d=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;root.dataset.theme=d?'light':'dark';};
+
+  // hero: one brief, many creatives
+  const briefs=[
+    {b:'"Summer serum launch, Gen Z, playful"',lines:['Glow, on repeat.','Dewy by 9am.','Serum, but daily.','Skin first. Always.','Light layers, big glow.','Your summer edit.','Three drops. Done.','Made for midday.']},
+    {b:'"Protein bar, gym regulars, bold"',lines:['20g. Zero excuses.','Leg day fuel.','Bite. Lift. Repeat.','Snack like you train.','Built for the 6am crowd.','Gains, wrapped.','Your new pre-workout.','Strong taste. Stronger you.']},
+    {b:'"Vitamin gummies, busy parents, warm"',lines:['Healthy, handled.','The easy daily win.','Chewable calm.','One less thing.','Good mornings, sorted.','Tiny habit. Big days.','Yes, they taste good.','Care in a jar.']}
+  ];
+  const palette=[['#FF4D2E','#000'],['#BFA8FF','#000'],['#FFD43B','#000'],['#0B5D4B','#F2FFF8'],['#8EC9FF','#000'],['#000','#FFD43B'],['#F4D6CC','#000'],['#FF4D2E','#FFF']];
+  const shape=c=>`<svg viewBox="0 0 40 70"><rect x="14" y="2" width="12" height="12" rx="2" fill="${c}"/><rect x="6" y="14" width="28" height="54" rx="8" fill="none" stroke="${c}" stroke-width="3"/><rect x="11" y="34" width="18" height="12" rx="2" fill="${c}"/></svg>`;
+  const tiles=document.getElementById('tiles');let bi=0,k=0,n=1;
+  function paint(t){const [bg,fg]=palette[(n+k)%palette.length],line=briefs[bi].lines[n%8];t.style.background=bg;t.style.color=fg;t.innerHTML=`<span class="v">variant ${n}</span><span class="line">${line}</span>${shape(fg)}`;n++;}
+  for(let i=0;i<6;i++){const t=document.createElement('div');t.className='tile';paint(t);tiles.appendChild(t);}
+  function swap(t,delay){setTimeout(()=>{t.classList.remove('swap');void t.offsetWidth;t.classList.add('swap');setTimeout(()=>paint(t),280);},delay);}
+  let auto=null,hover=false;
+  if(!reduce){auto=setInterval(()=>{if(!hover&&!document.hidden){swap(tiles.children[k%6],0);k++;}},1600);}
+  tiles.addEventListener('mouseenter',()=>hover=true);tiles.addEventListener('mouseleave',()=>hover=false);
+  document.getElementById('gen').onclick=()=>{bi=(bi+1)%briefs.length;document.getElementById('briefText').textContent=briefs[bi].b;
+    [...tiles.children].forEach((t,i)=>reduce?paint(t):swap(t,i*90));};
+
+  // skills -> work
+  const list=document.getElementById('worklist');
+  document.querySelectorAll('.skill').forEach(s=>{
+    const on=()=>{const ids=s.dataset.uses.split(' ').filter(Boolean);list.classList.add('dim');list.querySelectorAll('.case').forEach(c=>c.classList.toggle('hl',ids.includes(c.dataset.id)));};
+    const off=()=>{list.classList.remove('dim');list.querySelectorAll('.case').forEach(c=>c.classList.remove('hl'));};
+    s.onmouseenter=on;s.onfocus=on;s.onmouseleave=off;s.onblur=off;});
+
+  // case study frames appear in sequence
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.35});
+  document.querySelectorAll('.frames').forEach(f=>io.observe(f));
+
+  // quick answers
+  const out=document.getElementById('answer');let timer;
+  document.querySelectorAll('.q').forEach(b=>b.onclick=()=>{document.querySelectorAll('.q').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    clearInterval(timer);const t=b.dataset.a;if(reduce){out.textContent=t;return;}out.textContent='';out.classList.add('typing');let i=0;
+    timer=setInterval(()=>{out.textContent=t.slice(0,++i);if(i>=t.length){clearInterval(timer);out.classList.remove('typing');}},16);});
+</script>
+</body>
+</html>
