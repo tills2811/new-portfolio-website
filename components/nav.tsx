@@ -45,7 +45,7 @@ export default function Nav() {
         </div>
         <div className="flex items-center gap-[18px] min-[900px]:gap-[26px]">
           <ThemeToggle />
-          <a href="/CV.pdf" download className="pill !px-4 !py-2">
+          <a href="/Shreyash_Arali_Resume.pdf" download className="pill !px-4 !py-2">
             Download CV
           </a>
         </div>

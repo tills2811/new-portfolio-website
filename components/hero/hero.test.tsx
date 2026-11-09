@@ -18,7 +18,7 @@ describe("Hero", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "See my work" })).toHaveAttribute("href", "/#work");
     const cv = screen.getByRole("link", { name: "Download CV" });
-    expect(cv).toHaveAttribute("href", "/CV.pdf");
+    expect(cv).toHaveAttribute("href", "/Shreyash_Arali_Resume.pdf");
     expect(cv).toHaveAttribute("download");
   });
 });
