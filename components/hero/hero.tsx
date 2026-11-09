@@ -16,7 +16,7 @@ export default function Hero() {
           <Link href="/#work" className="pill">
             See my work
           </Link>
-          <a href="/CV.pdf" download className="pill pill-ghost">
+          <a href="/Shreyash_Arali_Resume.pdf" download className="pill pill-ghost">
             Download CV
           </a>
         </div>

@@ -25,10 +25,10 @@ describe("Nav", () => {
     expect(row.querySelector('a[href="/#contact"]')).not.toBeNull();
   });
 
-  it("CV link has download attribute and href /CV.pdf", () => {
+  it("CV link has download attribute and href /Shreyash_Arali_Resume.pdf", () => {
     renderNav();
     const cv = screen.getByRole("link", { name: "Download CV" });
-    expect(cv).toHaveAttribute("href", "/CV.pdf");
+    expect(cv).toHaveAttribute("href", "/Shreyash_Arali_Resume.pdf");
     expect(cv).toHaveAttribute("download");
   });
 
